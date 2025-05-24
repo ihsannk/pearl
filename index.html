@@ -145,7 +145,28 @@
         body.dark-theme .search-controls button:disabled { background-color: #555; color: #999;}
         #search-status { font-size: 0.9em; color: var(--text-color); min-width: 80px; text-align: center; margin-top: 4px; }
 
-        h1 { text-align: center; font-size: 2.2em; color: var(--primary-color); border-bottom: 3px solid var(--primary-color); padding-bottom: 10px; margin-top: 20px; margin-bottom: 30px; }
+        /* Logo Styling - NEW */
+        .header-logo-container {
+            text-align: center; /* Center the logo container */
+            padding: 20px 0; /* Add some padding around the logo */
+            border-bottom: 3px solid var(--primary-color); /* Keep a similar border to old H1 */
+            margin-bottom: 30px;
+        }
+        .header-logo {
+            max-width: 350px; /* Adjust as needed for desired desktop size */
+            height: auto; /* Maintain aspect ratio */
+            display: inline-block; /* Allows centering via text-align on parent */
+        }
+        @media (max-width: 600px) {
+            .header-logo {
+                max-width: 80%; /* Logo takes more width on smaller screens */
+            }
+        }
+        /* End Logo Styling */
+
+
+        /* h1 was here, now replaced by logo container */
+
         .act-section { border: 1px solid var(--border-color); padding: 20px; margin-bottom: 40px; border-radius: 8px; background-color: var(--content-bg-color); transition: background-color 0.3s ease, border-color 0.3s ease;}
         .act-section .section ul, .act-section > ul {
             list-style-type: none;
@@ -184,9 +205,9 @@
 
         @media print {
             body { padding-left: 0; background-color: white; color: black; }
-            #toc-sidebar, #top-controls-wrapper, #scroll-to-top, #toc-toggle-button, .copy-button, .toggle-sections-btn { display: none !important; }
+            #toc-sidebar, #top-controls-wrapper, #scroll-to-top, #toc-toggle-button, .copy-button, .toggle-sections-btn, .header-logo-container /* Hide logo for print */ { display: none !important; }
             .container { max-width: 100%; margin: 0; padding: 0; box-shadow: none; border-radius: 0; }
-            h1, h2, h3 { color: black !important; border-bottom-color: black !important; }
+            h2, h3 { color: black !important; border-bottom-color: black !important; } /* Changed h1 to h2 for act titles */
             a { text-decoration: none; color: black !important; }
             .highlight, .current-match { background-color: transparent !important; color: black !important; font-weight: normal; padding: 0; border-radius: 0; box-shadow: none; }
             .section, .act-section { border-bottom: 1px solid #ccc; border: none; padding: 0; margin-bottom: 20px;}
@@ -208,7 +229,7 @@
             #search-box { width: 90%; max-width: none;}
             #search-act-filter { width: 90%; margin-top: 8px; }
              .act-section > h2, .act-section h3 { scroll-margin-top: 200px; /* Increased further for stacked controls */ }
-             h1 { font-size: 1.8em; }
+            .header-logo-container h1 /* If you keep h1 for logo container */ { font-size: 1.8em; }
             .act-section > h2 { font-size: 1.5em; }
             .act-section h3 { font-size: 1.2em; }
         }
@@ -244,9 +265,11 @@
     </div>
 
     <div class="container">
-        <h1>PEARL (Pharmacy Enforcement Acts & Regulation Lexicon)</h1>
-        <div id="content">
+        <div class="header-logo-container">
+            <img src="Pearl1.png" alt="PEARL (Pharmacy Enforcement Acts & Regulation Lexicon) Logo" class="header-logo">
+        </div>
 
+        <div id="content">
             <div id="soda" class="act-section">
                 <div class="act-section-header">
                     <h2>SALE OF DRUGS ACT 1952 (REVISED - 1989)</h2>
@@ -1086,10 +1109,6 @@
                     console.warn('Sections wrapper not found for button:', button);
                     return;
                 }
-
-                // Set initial state based on current content (e.g., if sections are already there or added later)
-                // For simplicity, assume all expanded initially unless modified.
-                // The button's aria-expanded should reflect this.
 
                 button.addEventListener('click', () => {
                     const isExpanded = button.getAttribute('aria-expanded') === 'true';
