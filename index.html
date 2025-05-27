@@ -97,7 +97,7 @@
 
         #toc-sidebar li a.toc-act-title {
             font-weight: bold; font-size: 0.95em; color: var(--primary-color);
-            margin-top: 10px; background-color: #e0e0e0;
+            margin-top: 10px; background-color: rgba(0,0,0,0.05);
             display: flex; align-items: center; cursor: pointer;
         }
         .toc-act-toggle-icon { margin-right: 8px; transition: transform 0.2s ease-in-out; display: inline-block; }
@@ -1215,9 +1215,6 @@
             body.classList.toggle('toc-collapsed');
             body.classList.toggle('toc-open');
             tocToggleButton.innerHTML = tocSidebar.classList.contains('collapsed') ? '&#9776;' : '&times;';
-			if (!tocSidebar.classList.contains('collapsed')) { // If now open
-            document.getElementById('toc-sidebar').scrollTop = 0; 
-			}
         }
 
         function updateScrollSpy() {
@@ -1266,12 +1263,10 @@
                     }
                     
                     // Scroll TOC to keep active link visible
-                    /*
-					if (link.offsetTop < tocSidebarEl.scrollTop || 
+                    if (link.offsetTop < tocSidebarEl.scrollTop || 
                         link.offsetTop + link.offsetHeight > tocSidebarEl.scrollTop + tocSidebarEl.clientHeight) {
                         tocSidebarEl.scrollTop = link.offsetTop - (tocSidebarEl.clientHeight / 3) + (link.offsetHeight / 2);
                     }
-					*/
                 }
             });
         }
@@ -1455,9 +1450,7 @@
         function scrollToTopFunc() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         document.addEventListener('DOMContentLoaded', () => {
-            window.scrollTo(0, 0);
-			document.getElementById('toc-sidebar').scrollTop = 0;
-			originalContentHTML = contentElement.innerHTML; // Store initial content structure
+            originalContentHTML = contentElement.innerHTML; // Store initial content structure
             
             initThemeToggle();
             initFontSizeControls();
@@ -1479,14 +1472,9 @@
                  else { if (!tocSidebar.classList.contains('collapsed')) { body.classList.add('toc-open'); body.classList.remove('toc-collapsed'); tocToggleButton.innerHTML = '&times;'; }
                  else { body.classList.add('toc-collapsed'); body.classList.remove('toc-open'); tocToggleButton.innerHTML = '&#9776;'; } }
             });
-			if (window.innerWidth <= 900) { body.classList.add('toc-collapsed'); tocSidebar.classList.add('collapsed'); tocToggleButton.innerHTML = '&#9776;'; }
+            if (window.innerWidth <= 900) { body.classList.add('toc-collapsed'); tocSidebar.classList.add('collapsed'); tocToggleButton.innerHTML = '&#9776;'; }
             else { tocToggleButton.innerHTML = '&times;'; }
-            // Force TOC to be closed by default
-            /*
-			body.classList.add('toc-collapsed'); 
-            tocSidebar.classList.add('collapsed'); 
-            tocToggleButton.innerHTML = '&#9776;'; 
-            */
+            
             updateScrollSpy(); // Initial call for scroll spy
         });
 
