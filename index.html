@@ -252,7 +252,7 @@
                 <select id="search-act-filter" aria-label="Filter search by Act">
                     <option value="all">All Acts & Regulations</option>
                     </select>
-                <input type="text" id="search-box" placeholder="Search..." aria-label="Search Term">
+                <input type="text" id="search-box" placeholder="Search... (Press /)" aria-label="Search Term">
             </div>
             <div class="search-controls">
                  <button onclick="performSearch()" aria-label="Perform search">Search</button>
@@ -1467,7 +1467,41 @@
 
             document.getElementById('search-box').addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); performSearch(); } });
             document.getElementById('search-act-filter').addEventListener('change', performSearch); // Re-search on filter change
+//  '/' Shortcut and Dynamic Placeholder Logic
+            const searchBoxElement = document.getElementById('search-box');
 
+            if (searchBoxElement) {
+                // --- Dynamic Placeholder Logic ---
+                const fullPlaceholderText = "Search... (Press /)";
+                const focusedPlaceholderText = "Search...";
+
+                searchBoxElement.placeholder = fullPlaceholderText;
+
+                searchBoxElement.addEventListener('focus', function() {
+                    this.placeholder = focusedPlaceholderText;
+                });
+
+                searchBoxElement.addEventListener('blur', function() {
+                    if (this.value === '') {
+                        this.placeholder = fullPlaceholderText;
+                    }
+                });
+                // --- End Dynamic Placeholder Logic ---
+
+                // --- '/' Shortcut: Event listener attached to the document ---
+                document.addEventListener('keydown', function(event) {
+                    const targetElement = event.target;
+                    const isInput = targetElement.tagName === 'INPUT' ||
+                                    targetElement.tagName === 'TEXTAREA' ||
+                                    targetElement.tagName === 'SELECT';
+                    if (event.key === '/' && !isInput) {
+                        event.preventDefault();
+                        searchBoxElement.focus(); // Use the existing reference
+                    }
+                });
+                // --- End '/' Shortcut ---
+
+            } 
 
             window.addEventListener('resize', () => {
                  if (window.innerWidth > 900) { body.classList.remove('toc-collapsed', 'toc-open'); tocSidebar.classList.remove('collapsed'); tocToggleButton.innerHTML = '&times;'; }
