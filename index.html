@@ -260,6 +260,7 @@
                  <button id="prev-match" onclick="goToPreviousMatch()" aria-label="Previous match" disabled>&lt; Prev</button>
                  <button id="next-match" onclick="goToNextMatch()" aria-label="Next match" disabled>Next &gt;</button>
                  <span id="search-status" aria-live="polite"></span>
+				 <span id="current-act-status" aria-live="polite" style="font-size: 0.85em; margin-left: 8px; font-style: italic;"></span>
             </div>
         </div>
     </div>
@@ -619,15 +620,15 @@
                         <p>"clinical trial" means an investigation or series of investigations on persons conducted by or under the direction and supervision of persons with scientific training or experience for the purpose of finding out about, or determining, the safety, effectiveness and other effects of any product;</p>
                         <p>"colour" means a substance used as an ingredient of a cosmetic product solely to give tonality to the product;</p>
                         <p>"contract manufacturer" means any person who manufactures any product on the order of another person to whom a manufacturer's licence has been issued under these Regulations;</p>
-                        <p>"cosmetic" means any substance or preparation intended to be placed in contact with the various external parts of the human body (including epidermis, hair system, nails, lips and external genital organs) or with the teeth and the mucuos membranes of the oral cavity with a view exclusively or mainly to cleaning them, perfuming them, changing their appearance or correcting body odours, protecting them or keeping them in good condition;</p>
+                        <p>"cosmetic" means any substance or preparation intended to be placed in contact with the various external parts of the human body (including epidermis, hair system, nails, lips and external genital organs) or with the teeth and the mucous membranes of the oral cavity with a view exclusively or mainly to cleaning them, perfuming them, changing their appearance or correcting body odours, protecting them or keeping them in good condition;</p>
                         <p>"dental practitioner" means a person registered and having a valid annual or temporary practising certificate under the Dental Act 1971 [Act 51];</p>
                         <p>"drug" has the meaning assigned to it in the Ordinance but does not include a herbal remedy;</p>
                         <p>"flavour" means a substance used as an ingredient of a cosmetic product solely to impart taste to the product;</p>
                         <p>"fragrance" means a substance used as an ingredient of a cosmetic product solely to impart odour to the product;</p>
                         <p>"fully registered medical practitioner" means a person registered and having a valid annual or temporary practising certificate under the the Medical Act 1971[Act 50];</p>
-                        <p>"herbal remedy" means any drug consisting of a substance or a mixture of substances produced by drying, crushing or comminuting, but without subjecting to any other process, a natural substance or substancs of plant, animal or mineral origin, or any part of such substance or substances;</p>
+                        <p>"herbal remedy" means any drug consisting of a substance or a mixture of substances produced by drying, crushing or comminuting, but without subjecting to any other process, a natural substance or substances of plant, animal or mineral origin, or any part of such substance or substances;</p>
                         <p>"homeopathic medicine" means any pharmaceutical dosage form used in the homeopathic therapeutic system in which diseases are treated by the use of minute amount of such substances which are capable of producing in healthy person symptoms similar to those of the disease being treated;</p>
-                        <p>"indigenous medicine" means a system of treatment and prevention of disease established through traditional use of naturally occuring substances;</p>
+                        <p>"indigenous medicine" means a system of treatment and prevention of disease established through traditional use of naturally occurring substances;</p>
                         <p>"label" means a display of information, safety marks or features</p>
                         <ul>
                             <li>(a) accompanying a product; or</li>
@@ -636,7 +637,7 @@
                         <p>"licence" means any of the licences issued under regulation 12;</p>
                         <p>"licenced importer" means a person to whom an import licence has been issued under these Regulations;</p>
                         <p>"licensed manufacturer" means a person to whom a manufacturer's licence has been issued under these Regulations, and includes a contract manufacturer;</p>
-                        <p>"licensed wholesaler" means a person to whom a whosesaler's licence has been issued under these Regulations;</p>
+                        <p>"licensed wholesaler" means a person to whom a wholesaler's licence has been issued under these Regulations;</p>
                         <p>"life threatening illness" means a disease where the likelihood of death is high unless the course of the disease is interrupted;</p>
                         <p>"manufacture", in relation to any product includes</p>
                         <ul>
@@ -656,7 +657,7 @@
                         <p>"registration certificate" - [Deleted P.U.(A) 257/2014]</p>
                         <p>"registered product" means a product currently registered in accordance with the provisions of these Regulations;</p>
                         <p>"Secretary" means the Secratary to the Authority appointed under regulation 3(6);</p>
-                        <p>"traditional medicine" means any product used in the practice of indigenous medicine, in which the drug consist solely of one or more naturally occuring substance of a plant, animal or mineral, of parts thereof, in the unextracted or crude extract form, and a homeopathic medicine;</p>
+                        <p>"traditional medicine" means any product used in the practice of indigenous medicine, in which the drug consist solely of one or more naturally occurring substance of a plant, animal or mineral, of parts thereof, in the unextracted or crude extract form, and a homeopathic medicine;</p>
                         <p>"veterinary practitioner" means a veterinary surgeon registered and having a valid annual practising certificate or temporary permit to practise under the Veterinary Surgeons Act 1974 [Act 147].</p>
                     </div>
 
@@ -1101,7 +1102,7 @@
         <div class="section" id="poisons-act-sec2">
             <h3>Section 2. Interpretation.</h3>
             <p>(1) In this Act, unless the context otherwise requires-</p>
-            <p>"Acetylating substance" includes acetic anhydride, acetyl chloride and acetyl bormide;</p>
+            <p>"Acetylating substance" includes acetic anhydride, acetyl chloride and acetyl bromide;</p>
             <p>"animal treatment" includes the investigation, examination or treatment of animal ailments;</p>
             <p>"authorized officer" means-</p>
             <ul>
@@ -1113,7 +1114,7 @@
             <p>"compounding", and its grammatical variations, mean the preparation, weighing, measuring and mixing if necessary of drugs and chemicals for the treatment of ailments;</p>
             <p>"contravention" of a provision includes a failure to comply with such provision;</p>
             <p>"conveyance" includes ship, train, vehicle, aircraft or any other means of transport by which persons or goods can be carried;</p>
-            <p>"dental treatment" includes the investigation, examination or treatment of human ailments of the teeth or the oral or maxillo-facial complex or its related structures or the performance of operations or the giving of treatment commonly undertaken or given by those practicing dentistry;</p>
+            <p>"dental treatment" includes the investigation, examination or treatment of human ailments of the teeth or the oral or maxillo-facial complex or its related structures or the performance of operations or the giving of treatment commonly undertaken or given by those practising dentistry;</p>
             <p>"Director General of Health" means the Director General of Health, Malaysia;</p>
             <p>"dispensed medicine" means a medicine supplied by -</p>
             <ul>
@@ -3583,6 +3584,7 @@ function handleTOCClick(event, targetHref) {
             addCopyButtons(); // Re-add as they are part of originalContentHTML
 
             const searchTerm = document.getElementById('search-box').value;
+			window.lastSearchedTerm = searchTerm.trim();
             const filterValue = document.getElementById('search-act-filter').value;
 
             if (!searchTerm.trim()) {
@@ -3698,33 +3700,105 @@ function handleTOCClick(event, targetHref) {
             updateSearchStatus();
         }
 
-        function updateSearchStatus() {
-            const statusSpan = document.getElementById('search-status'); const prevBtn = document.getElementById('prev-match'); const nextBtn = document.getElementById('next-match');
-            if (matches.length === 0) { statusSpan.textContent = document.getElementById('search-box').value.trim() ? '0 found' : ''; prevBtn.disabled = true; nextBtn.disabled = true; }
-            else { statusSpan.textContent = `${currentMatchIndex + 1} of ${matches.length}`; prevBtn.disabled = currentMatchIndex <= 0; nextBtn.disabled = currentMatchIndex >= matches.length - 1; }
+         function updateSearchStatus() {
+            const statusSpan = document.getElementById('search-status');
+            const prevBtn = document.getElementById('prev-match');
+            const nextBtn = document.getElementById('next-match');
+            const actStatusSpan = document.getElementById('current-act-status'); // Get the span
+
+            if (matches.length === 0) {
+                statusSpan.textContent = document.getElementById('search-box').value.trim() ? '0 found' : '';
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                if (actStatusSpan) actStatusSpan.textContent = ''; // Clear act status here too
+            } else {
+                statusSpan.textContent = `${currentMatchIndex + 1} of ${matches.length}`;
+                prevBtn.disabled = currentMatchIndex <= 0;
+                nextBtn.disabled = currentMatchIndex >= matches.length - 1;
+                // No need to set Act status here; goToMatch handles it when navigating.
+            }
         }
         function goToMatch(index) {
             if (index < 0 || index >= matches.length) return;
-            if (currentMatchIndex !== -1 && matches[currentMatchIndex]) { matches[currentMatchIndex].classList.remove('current-match'); }
-            currentMatchIndex = index; const currentElement = matches[currentMatchIndex];
-            if (!currentElement) return; // Safety check
-            currentElement.classList.add('current-match');
-            currentElement.scrollIntoView({ behavior: 'smooth', block: 'center' }); updateSearchStatus();
-        }
-        function goToNextMatch() { if (currentMatchIndex < matches.length - 1) { goToMatch(currentMatchIndex + 1); } }
-        function goToPreviousMatch() { if (currentMatchIndex > 0) { goToMatch(currentMatchIndex - 1); } }
 
+            // Remove highlight from the previous match (if any)
+            if (currentMatchIndex !== -1 && matches[currentMatchIndex]) {
+                matches[currentMatchIndex].classList.remove('current-match');
+            }
+
+            currentMatchIndex = index;
+            const currentElement = matches[currentMatchIndex];
+            const actStatusSpan = document.getElementById('current-act-status'); // Get the new span
+
+            // If for some reason the element doesn't exist, clear status and exit
+            if (!currentElement) {
+                if(actStatusSpan) actStatusSpan.textContent = '';
+                return;
+            }
+
+            // Add 'current-match' class and scroll into view
+            currentElement.classList.add('current-match');
+            currentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Find its parent Act section
+            const actSection = currentElement.closest('.act-section');
+
+            // Update the act status span
+            if (actSection && actStatusSpan) {
+                const actTitle = actSection.querySelector('h2'); // Find the h2 within the section
+                if (actTitle) {
+                    actStatusSpan.textContent = `(In: ${actTitle.textContent.trim()})`; // Display the act title
+                } else {
+                    actStatusSpan.textContent = ''; // Clear if no title found
+                }
+            } else if (actStatusSpan) {
+                actStatusSpan.textContent = ''; // Clear if no act section found
+            }
+
+            // Update the "X of Y" status
+            updateSearchStatus();
+        }
+
+        // --- UNCHANGED goToNextMatch ---
+        function goToNextMatch() {
+            if (currentMatchIndex < matches.length - 1) {
+                goToMatch(currentMatchIndex + 1);
+            }
+        }
+
+        // --- UNCHANGED goToPreviousMatch ---
+        function goToPreviousMatch() {
+            if (currentMatchIndex > 0) {
+                goToMatch(currentMatchIndex - 1);
+            }
+        }
+
+        // --- UPDATED clearSearch ---
         function clearSearch(keepSearchTerm = false) {
             const contentDiv = document.getElementById('content');
-            if (originalContentHTML) { contentDiv.innerHTML = originalContentHTML; addCopyButtons(); initExpandCollapse(); /* Re-init expand/collapse state and listeners */ }
-            matches = []; currentMatchIndex = -1;
-            if (!keepSearchTerm) { document.getElementById('search-box').value = ''; }
-            // Reset expand/collapse buttons to their default "Collapse Sections" text
+            if (originalContentHTML) {
+                contentDiv.innerHTML = originalContentHTML;
+                addCopyButtons(); // Ensure you call functions to re-add dynamic elements
+                initExpandCollapse(); // Re-init expand/collapse state and listeners
+            }
+            matches = [];
+            currentMatchIndex = -1;
+            if (!keepSearchTerm) {
+                document.getElementById('search-box').value = '';
+            }
+            // Reset expand/collapse buttons
             document.querySelectorAll('.toggle-sections-btn').forEach(button => {
                 button.textContent = 'Collapse Sections';
                 button.setAttribute('aria-expanded', 'true');
             });
-            updateSearchStatus();
+
+            // Clear the Act status span
+            const actStatusSpan = document.getElementById('current-act-status');
+            if (actStatusSpan) {
+                actStatusSpan.textContent = '';
+            }
+
+            updateSearchStatus(); // Update the main status
         }
 
         const scrollToTopButton = document.getElementById('scroll-to-top');
@@ -3745,7 +3819,20 @@ function handleTOCClick(event, targetHref) {
             scrollToTopButton.addEventListener('click', scrollToTopFunc);
             window.addEventListener('scroll', handleScroll); // For scroll-to-top button, scroll spy handled separately
 
-            document.getElementById('search-box').addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); performSearch(); } });
+            document.getElementById('search-box').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Prevent default form submission/newline
+                    const currentSearchTermInBox = document.getElementById('search-box').value.trim();
+
+                    // If matches exist from the *same* previous search term, and we are not on the last match, go to next.
+                    // Otherwise, perform a new search (or re-search if term is unchanged but at end of matches).
+                    if (matches.length > 0 && currentSearchTermInBox === window.lastSearchedTerm && currentMatchIndex < matches.length - 1) {
+                        goToNextMatch();
+                    } else {
+                        performSearch(); // This will also update window.lastSearchedTerm
+                    }
+                }
+            });
             document.getElementById('search-act-filter').addEventListener('change', performSearch); // Re-search on filter change
 //  '/' Shortcut and Dynamic Placeholder Logic
             const searchBoxElement = document.getElementById('search-box');
