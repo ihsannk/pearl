@@ -527,16 +527,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.performSearch = function() {
-        resetAndReinitializeContentFeatures(true);
+        // Existing reset and reinitialization logic
+        resetAndReinitializeContentFeatures(true); // Pass true to indicate search context
 
         const searchTerm = searchBox ? searchBox.value.trim() : '';
-        window.lastSearchedTerm = searchTerm;
+        window.lastSearchedTerm = searchTerm; // Update global last searched term
+        
         const filterValue = searchActFilter ? searchActFilter.value : 'all';
+        const selectedOption = searchActFilter ? searchActFilter.options[searchActFilter.selectedIndex] : null;
+        const searchCategory = selectedOption ? selectedOption.text : 'All Acts & Regulations'; // Get the text of the selected filter
 
         if (!searchTerm) {
             updateSearchStatus();
             return;
         }
+
+        // **** ADD THIS CODE TO SEND DATA TO GOOGLE ANALYTICS ****
+        if (typeof gtag === 'function') {
+            gtag('event', 'search', {
+                'search_term': searchTerm.toLowerCase(), // Send search term (good practice to lowercase)
+                'search_category': searchCategory      // Send the selected act/filter
+            });
+            console.log(`GA Event Sent: search, search_term: ${searchTerm.toLowerCase()}, search_category: ${searchCategory}`); // For your debugging
+        }
+        // *********************************************************
+
         const searchRegExp = new RegExp(escapeRegExp(searchTerm), 'gi');
         let searchScopeElement = contentElement;
         if (filterValue !== 'all') {
