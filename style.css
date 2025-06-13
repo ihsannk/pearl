@@ -313,28 +313,26 @@ body.dark-theme .search-controls button:disabled {
     margin-top: 4px;
 }
 
-/* Logo Styling - NEW */
+/* Logo Styling */
 .header-logo-container {
-    text-align: center; /* Center the logo container */
-    padding: 20px 0; /* Add some padding around the logo */
-    border-bottom: 3px solid var(--primary-color); /* Keep a similar border to old H1 */
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 3px solid var(--primary-color);
     margin-bottom: 30px;
 }
 
 .header-logo {
-    max-width: 350px; /* Adjust as needed for desired desktop size */
-    height: auto; /* Maintain aspect ratio */
-    display: inline-block; /* Allows centering via text-align on parent */
+    max-width: 350px;
+    height: auto;
+    display: inline-block;
 }
 
 @media (max-width: 600px) {
     .header-logo {
-        max-width: 80%; /* Logo takes more width on smaller screens */
+        max-width: 80%;
     }
 }
 /* End Logo Styling */
-
-/* h1 was here, now replaced by logo container */
 
 .act-section {
     border: 1px solid var(--border-color);
@@ -531,6 +529,24 @@ body.dark-theme .deleted {
     outline-offset: 2px;
 }
 
+/* Global Collapse Button Styling */
+.global-collapse-btn {
+    padding: 5px 10px; /* Matches .toggle-sections-btn padding */
+    font-size: 0.8em; /* Matches .toggle-sections-btn font size */
+    background-color: var(--secondary-color); /* Matches .toggle-sections-btn background */
+    color: var(--button-text); /* Matches .toggle-sections-btn text color */
+    border: none; /* Matches .toggle-sections-btn border */
+    border-radius: 4px; /* Matches .toggle-sections-btn border-radius */
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Kept a subtle shadow, similar to how your toggle buttons might have one or for general aesthetic if desired. If you want it completely flat like the smaller accessibility buttons, change to `box-shadow: none;` */
+}
+
+.global-collapse-btn:hover {
+    opacity: 0.8; /* Consistent hover effect */
+}
+
+/* Print Styles */
 @media print {
     body {
         padding-left: 0;
@@ -544,6 +560,7 @@ body.dark-theme .deleted {
     #toc-toggle-button,
     .copy-button,
     .toggle-sections-btn,
+    .global-collapse-btn, /* Hide global collapse button for print */
     .header-logo-container /* Hide logo for print */ {
         display: none !important;
     }
@@ -557,7 +574,7 @@ body.dark-theme .deleted {
     }
 
     h2,
-    h3 { /* Changed h1 to h2 for act titles */
+    h3 {
         color: black !important;
         border-bottom-color: black !important;
     }
@@ -595,6 +612,7 @@ body.dark-theme .deleted {
     }
 }
 
+/* Responsive Styles for screens up to 900px */
 @media (max-width: 900px) {
     body {
         padding-left: 0;
@@ -631,6 +649,7 @@ body.dark-theme .deleted {
     }
 }
 
+/* Responsive Styles for screens up to 480px */
 @media (max-width: 480px) {
     #search-input-group {
         flex-direction: column;
@@ -651,7 +670,7 @@ body.dark-theme .deleted {
         scroll-margin-top: 200px; /* Increased further for stacked controls */
     }
 
-    .header-logo-container h1 /* If you keep h1 for logo container */ {
+    .header-logo-container h1 { /* If you keep h1 for logo container */
         font-size: 1.8em;
     }
 

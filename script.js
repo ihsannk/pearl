@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextMatchBtn = document.getElementById('next-match');
     const currentActStatusSpan = document.getElementById('current-act-status');
     const tocList = document.getElementById('toc-list');
+    const collapseAllSectionsBtn = document.getElementById('collapse-all-sections-btn');
 
     // --- State Variables ---
     let matches = [];
@@ -127,8 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // console.warn('Sections wrapper not found for button:', button);
                 return;
             }
-            const anySectionInitiallyCollapsed = sectionsWrapper.querySelector('.section.collapsed-section');
-            const allInitiallyExpanded = !anySectionInitiallyCollapsed;
+            const allInitiallyExpanded = !sectionsWrapper.querySelector('.section.collapsed-section');
 
             button.setAttribute('aria-expanded', allInitiallyExpanded.toString());
             button.textContent = allInitiallyExpanded ? 'Collapse Sections' : 'Expand Sections';
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sectionsWrapper.querySelectorAll('.section').forEach(s => {
                     s.classList.toggle('collapsed-section', isCurrentlyExpanded);
                 });
-                newButton.setAttribute('aria-expanded', !isCurrentlyExpanded);
+                newButton.setAttribute('aria-expanded', (!isCurrentlyExpanded).toString());
                 newButton.textContent = !isCurrentlyExpanded ? 'Collapse Sections' : 'Expand Sections';
                 requestAnimationFrame(updateScrollSpy);
             });
@@ -213,9 +213,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const header = document.getElementById('top-controls-wrapper');
             const headerHeight = header ? header.offsetHeight : 0;
             const buffer = 20;
-            const targetAbsoluteTop = getAbsoluteTop(targetElement); // Use absolute top for scrolling target
-            const targetPosition = targetAbsoluteTop - headerHeight - buffer;
 
+            // NEW: Ensure TOC is open
+            if (tocSidebar.classList.contains('collapsed')) {
+                toggleTOC(); // Expands the TOC sidebar
+            }
+
+            // NEW: Ensure relevant content section is expanded
+            const parentActSection = targetElement.closest('.act-section');
+            if (parentActSection) {
+                const toggleBtn = parentActSection.querySelector('.toggle-sections-btn');
+                if (toggleBtn && toggleBtn.getAttribute('aria-expanded') === 'false') {
+                    toggleBtn.click(); // Programmatically click to expand the content section
+                }
+            }
+
+            const targetAbsoluteTop = getAbsoluteTop(targetElement);
+            const targetPosition = targetAbsoluteTop - headerHeight - buffer;
 
             window.scrollTo({ top: targetPosition, behavior: 'smooth' });
 
@@ -224,8 +238,12 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 location.hash = targetHref;
             }
+
+            // NEW: Collapse TOC if on small screens after navigation
             if (window.innerWidth <= 900 && tocSidebar && !tocSidebar.classList.contains('collapsed')) {
-                toggleTOC();
+                // Give a small delay to allow smooth scroll to start before collapsing TOC,
+                // so it doesn't obstruct the initial view of the target.
+                setTimeout(() => toggleTOC(), 300);
             }
         }
     }
@@ -258,28 +276,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const toggleIcon = document.createElement('span');
             const sectionsUl = document.createElement('ul');
-            sectionsUl.className = 'toc-sections collapsed';
+            sectionsUl.className = 'toc-sections collapsed'; // Keep initially collapsed
 
             toggleIcon.className = 'toc-act-toggle-icon collapsed';
-            toggleIcon.innerHTML = '&#9656;';
+            toggleIcon.innerHTML = '&#9656;'; // Right arrow
 
             actA.appendChild(toggleIcon);
             actA.appendChild(document.createTextNode(" " + actTitleElement.textContent));
 
             actA.onclick = (e) => {
-                const isIconClick = e.target === toggleIcon || e.target.parentElement === toggleIcon;
-                if (sectionsUl.hasChildNodes() && (isIconClick || e.target === actA)) {
-                    e.preventDefault();
+                const isIconClick = e.target === toggleIcon || e.target.closest('.toc-act-toggle-icon') === toggleIcon;
+                if (sectionsUl.hasChildNodes() && isIconClick) {
+                    e.preventDefault(); // Prevent navigation if clicking the icon
                     sectionsUl.classList.toggle('collapsed');
                     toggleIcon.classList.toggle('collapsed');
-                    toggleIcon.innerHTML = sectionsUl.classList.contains('collapsed') ? '&#9656;' : '&#9662;';
-                }
-                if (!isIconClick && e.target === actA) {
+                    toggleIcon.innerHTML = sectionsUl.classList.contains('collapsed') ? '&#9656;' : '&#9662;'; // Toggle arrow
+                } else {
                     handleTOCClick(e, actA.getAttribute('href'));
-                } else if (isIconClick && sectionsUl.classList.contains('collapsed')) {
-                    // No nav
-                } else if (!isIconClick) {
-                     handleTOCClick(e, actA.getAttribute('href'));
                 }
             };
             actLi.appendChild(actA);
@@ -308,8 +321,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (hasSubSections) {
                 actLi.appendChild(sectionsUl);
             } else {
-                toggleIcon.style.display = 'none';
-                actA.onclick = (e) => handleTOCClick(e, actA.getAttribute('href'));
+                toggleIcon.style.display = 'none'; // Hide arrow if no subsections
+                actA.onclick = (e) => handleTOCClick(e, actA.getAttribute('href')); // Ensure click on title navigates
             }
             tocList.appendChild(actLi);
         });
@@ -317,18 +330,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateScrollSpy() {
-        console.log("--- updateScrollSpy CALLED ---"); // LOG 3 (Enabled)
+        // console.log("--- updateScrollSpy CALLED ---");
 
         if (!tocLinks.length || !contentHeadings.length) {
-            console.log("Exiting updateScrollSpy: No ToC links or content headings.");
+            // console.log("Exiting updateScrollSpy: No ToC links or content headings.");
             return;
         }
 
         let currentSectionId = null;
         const scrollPosition = window.scrollY + SCROLL_SPY_OFFSET;
-        console.log(`Current window.scrollY: ${window.scrollY}, SCROLL_SPY_OFFSET: ${SCROLL_SPY_OFFSET}, Calculated scrollPosition: ${scrollPosition}`); // LOG 4 (Enabled)
-
-        let foundHeadingLog = "";
 
         for (let i = contentHeadings.length - 1; i >= 0; i--) {
             const heading = contentHeadings[i];
@@ -337,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 continue;
             }
 
-            const headingAbsoluteTop = getAbsoluteTop(heading); // USE THE HELPER FUNCTION
+            const headingAbsoluteTop = getAbsoluteTop(heading);
 
             const isH3 = heading.tagName === 'H3';
             let isSkippedDueToCollapse = false;
@@ -351,39 +361,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // LOG 5 (Enabled for detailed analysis)
-            console.log(
-                `Checking heading: ${heading.id} (index ${i}), ` +
-                `absoluteTop: ${headingAbsoluteTop}, originalOffsetTop: ${heading.offsetTop}, ` +
-                `offsetParent: ${heading.offsetParent ? heading.offsetParent.id || heading.offsetParent.tagName : 'null'}, ` +
-                `tagName: ${heading.tagName}, ` +
-                `isH3InCollapsedAct: ${isSkippedDueToCollapse}, ` +
-                `Condition (absoluteTop <= scrollPosition): ${headingAbsoluteTop <= scrollPosition}`
-            );
-
-
             if (isSkippedDueToCollapse) {
-                console.log(`Skipped ${heading.id} because its act section is collapsed.`); // LOG 6 (Enabled)
                 continue;
             }
 
             if (headingAbsoluteTop <= scrollPosition) {
                 currentSectionId = heading.id;
-                foundHeadingLog = `Found match: ${heading.id}, absoluteTop: ${headingAbsoluteTop}, tagName: ${heading.tagName}`;
-                console.log(`Potential currentSectionId: ${currentSectionId} (absoluteTop: ${headingAbsoluteTop})`); // LOG 7 (Enabled)
                 break;
             }
         }
 
-        console.log(`Final currentSectionId after loop: ${currentSectionId}. ${foundHeadingLog}`); // LOG 8 (Enabled)
-
-        let highlightedLinkFound = false;
         tocLinks.forEach(link => {
             if (!document.body.contains(link)) return;
             link.classList.remove('active-toc-link');
             if (link.getAttribute('href') === '#' + currentSectionId) {
                 link.classList.add('active-toc-link');
-                highlightedLinkFound = true;
                 const parentActLi = link.closest('ul.toc-sections')?.closest('li');
                 if (parentActLi) {
                     const parentActSublist = parentActLi.querySelector('ul.toc-sections');
@@ -398,10 +390,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-        console.log(`Any link highlighted for #${currentSectionId}? ${highlightedLinkFound}`); // LOG 9 (Enabled)
 
         if (isInitialScrollSpyUpdate) isInitialScrollSpyUpdate = false;
-        console.log("--- updateScrollSpy ENDED ---"); // LOG 10 (Enabled)
     }
 
 
@@ -409,7 +399,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateSearchFilter() {
         if (!searchActFilter || !contentElement) return;
         const currentValue = searchActFilter.value;
-        while (searchActFilter.options.length > 1) { searchActFilter.remove(1); }
+        while (searchActFilter.options.length > 1) {
+            searchActFilter.remove(1);
+        }
 
         contentElement.querySelectorAll('.act-section').forEach(actDiv => {
             const actTitleElement = actDiv.querySelector('h2');
@@ -457,10 +449,18 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Ensure the section containing the match is expanded
+        const actSection = currentElement.closest('.act-section');
+        if (actSection) {
+            const toggleBtn = actSection.querySelector('.toggle-sections-btn');
+            if (toggleBtn && toggleBtn.getAttribute('aria-expanded') === 'false') {
+                toggleBtn.click(); // Expand the section
+            }
+        }
+
         currentElement.classList.add('current-match');
         currentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        const actSection = currentElement.closest('.act-section');
         if (actSection && currentActStatusSpan) {
             const actTitle = actSection.querySelector('h2');
             currentActStatusSpan.textContent = actTitle ? `(In: ${actTitle.textContent.trim()})` : '';
@@ -527,30 +527,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.performSearch = function() {
-        // Existing reset and reinitialization logic
-        resetAndReinitializeContentFeatures(true); // Pass true to indicate search context
+        resetAndReinitializeContentFeatures(true);
 
         const searchTerm = searchBox ? searchBox.value.trim() : '';
-        window.lastSearchedTerm = searchTerm; // Update global last searched term
+        window.lastSearchedTerm = searchTerm;
         
         const filterValue = searchActFilter ? searchActFilter.value : 'all';
         const selectedOption = searchActFilter ? searchActFilter.options[searchActFilter.selectedIndex] : null;
-        const searchCategory = selectedOption ? selectedOption.text : 'All Acts & Regulations'; // Get the text of the selected filter
+        const searchCategory = selectedOption ? selectedOption.text : 'All Acts & Regulations';
 
         if (!searchTerm) {
             updateSearchStatus();
             return;
         }
 
-        // **** ADD THIS CODE TO SEND DATA TO GOOGLE ANALYTICS ****
         if (typeof gtag === 'function') {
             gtag('event', 'search', {
-                'search_term': searchTerm.toLowerCase(), // Send search term (good practice to lowercase)
-                'search_category': searchCategory      // Send the selected act/filter
+                'search_term': searchTerm.toLowerCase(),
+                'search_category': searchCategory
             });
-            console.log(`GA Event Sent: search, search_term: ${searchTerm.toLowerCase()}, search_category: ${searchCategory}`); // For your debugging
         }
-        // *********************************************************
 
         const searchRegExp = new RegExp(escapeRegExp(searchTerm), 'gi');
         let searchScopeElement = contentElement;
@@ -558,11 +554,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const filteredEl = document.getElementById(filterValue);
             if (filteredEl && contentElement.contains(filteredEl)) {
                 searchScopeElement = filteredEl;
-            } else {
-                // console.warn(`Search filter ID "${filterValue}" not found or not in #content. Defaulting to all content.`);
+                const toggleBtn = filteredEl.querySelector('.toggle-sections-btn');
+                if (toggleBtn && toggleBtn.getAttribute('aria-expanded') === 'false') {
+                    toggleBtn.click();
+                }
             }
         }
+        
         matches = findAndHighlightIterative(contentElement, searchRegExp, searchScopeElement);
+        
         currentMatchIndex = -1;
         if (matches.length > 0) {
             currentMatchIndex = 0;
@@ -581,14 +581,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.goToNextMatch = function() {
-        if (currentMatchIndex < matches.length - 1) {
+        if (matches.length > 0 && currentMatchIndex < matches.length - 1) {
             goToMatch(currentMatchIndex + 1);
+        } else if (matches.length > 0 && currentMatchIndex === matches.length - 1) {
+            goToMatch(0);
         }
     }
 
     window.goToPreviousMatch = function() {
-        if (currentMatchIndex > 0) {
+        if (matches.length > 0 && currentMatchIndex > 0) {
             goToMatch(currentMatchIndex - 1);
+        } else if (matches.length > 0 && currentMatchIndex === 0) {
+            goToMatch(matches.length - 1);
         }
     }
 
@@ -634,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (contentElement && originalContentHTML) {
             contentElement.innerHTML = originalContentHTML;
         } else {
-            console.error("Cannot reset content: contentElement or originalContentHTML missing.");
+            console.error("Cannot reset content: contentElement or originalContentHTML missing. This is a critical error.");
             return;
         }
 
@@ -643,23 +647,9 @@ document.addEventListener('DOMContentLoaded', () => {
         isInitialScrollSpyUpdate = true;
 
         requestAnimationFrame(() => {
-            console.log("--- resetAndReinitializeContentFeatures: Inside requestAnimationFrame ---"); // LOG 1 (Enabled)
             addCopyButtons();
             initExpandCollapse();
             buildTOCAndPrepScrollSpy();
-
-            // LOG 2 (Enabled) - Log heading info immediately after buildTOCAndPrepScrollSpy
-            if (contentHeadings.length > 0) {
-                console.log("Sample heading data immediately after buildTOCAndPrepScrollSpy (using getAbsoluteTop):");
-                contentHeadings.slice(0, Math.min(5, contentHeadings.length)).forEach(h => console.log(`  ID: ${h.id}, Tag: ${h.tagName}, absoluteTop: ${getAbsoluteTop(h)}, originalOffsetTop: ${h.offsetTop}, offsetParent: ${h.offsetParent ? h.offsetParent.id || h.offsetParent.tagName : 'null'}, Text: "${h.textContent.substring(0,30)}..."`));
-                if (contentHeadings.length > 5) {
-                   const lastH = contentHeadings[contentHeadings.length - 1];
-                   console.log(`  LAST ID: ${lastH.id}, Tag: ${lastH.tagName}, absoluteTop: ${getAbsoluteTop(lastH)}, originalOffsetTop: ${lastH.offsetTop}, offsetParent: ${lastH.offsetParent ? lastH.offsetParent.id || lastH.offsetParent.tagName : 'null'}, Text: "${lastH.textContent.substring(0,30)}..."`);
-                }
-            } else {
-                console.log("contentHeadings is empty after buildTOCAndPrepScrollSpy (within rAF).");
-            }
-
             populateSearchFilter();
             updateScrollSpy();
         });
@@ -677,6 +667,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         initThemeToggle();
         initFontSizeControls();
+
+        // Event listener for global collapse button
+        if (collapseAllSectionsBtn) {
+            collapseAllSectionsBtn.addEventListener('click', () => {
+                // Collapse all individual content sections
+                const allToggleButtons = document.querySelectorAll('.toggle-sections-btn');
+                allToggleButtons.forEach(button => {
+                    if (button.getAttribute('aria-expanded') === 'true') {
+                        button.click();
+                    }
+                });
+                // Collapse TOC sidebar if open
+                if (!tocSidebar.classList.contains('collapsed')) {
+                    toggleTOC();
+                }
+                // Also collapse all sub-sections in the TOC display
+                tocList.querySelectorAll('.toc-sections').forEach(ul => {
+                    if (!ul.classList.contains('collapsed')) {
+                        ul.classList.add('collapsed');
+                        const icon = ul.closest('li')?.querySelector('.toc-act-toggle-icon');
+                        if (icon) {
+                            icon.classList.add('collapsed');
+                            icon.innerHTML = '&#9656;';
+                        }
+                    }
+                });
+            });
+        }
 
         if (searchBox) {
             searchBox.addEventListener('keypress', (e) => {
@@ -722,12 +740,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateScrollSpy();
             }, 150);
         });
-        handleResponsiveTOC(); // Initial call to set responsive TOC state
+        handleResponsiveTOC();
 
-        // updateScrollSpy(); // Initial call is handled by resetAndReinitializeContentFeatures
-        updateSearchStatus(); // Initial search status
+        updateSearchStatus();
     }
 
-    initializePage(); // Call the main initialization function
-
+    initializePage();
 });
