@@ -133,7 +133,7 @@ body.toc-collapsed {
 
 #toc-sidebar li a.toc-act-title {
     font-weight: bold;
-    font-size: 0.95em;
+    font-size: 0.85em;
     color: var(--primary-color);
     margin-top: 10px;
     background-color: rgba(0,0,0,0.05);
@@ -173,7 +173,7 @@ body.dark-theme #toc-sidebar li a.toc-act-title {
 
 #toc-sidebar ul.toc-sections li a {
     padding-left: 25px;
-    font-size: 0.85em;
+    font-size: 0.75em;
 }
 
 #toc-toggle-button {
@@ -336,8 +336,8 @@ body.dark-theme .search-controls button:disabled {
 
 .act-section {
     border: 1px solid var(--border-color);
-    padding: 20px;
-    margin-bottom: 40px;
+    padding: 10px;
+    margin-bottom: 10px;
     border-radius: 8px;
     background-color: var(--content-bg-color);
     transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -353,9 +353,9 @@ body.dark-theme .search-controls button:disabled {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 2px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 5px;
 }
 
 .act-section > h2 {
@@ -364,8 +364,8 @@ body.dark-theme .search-controls button:disabled {
     text-align: center;
     border-bottom: 2px solid var(--primary-color);
     margin-top: 0;
-    padding-bottom: 10px;
-    margin-bottom: 25px;
+    padding-bottom: 2px;
+    margin-bottom: 2px;
     scroll-margin-top: 150px;
     flex-grow: 1;
 }
@@ -533,7 +533,7 @@ body.dark-theme .deleted {
 .global-collapse-btn {
     padding: 5px 10px; /* Matches .toggle-sections-btn padding */
     font-size: 0.8em; /* Matches .toggle-sections-btn font size */
-    background-color: var(--secondary-color); /* Matches .toggle-sections-btn background */
+    background-color: var(--button-bg); /* Matches .toggle-sections-btn background */
     color: var(--button-text); /* Matches .toggle-sections-btn text color */
     border: none; /* Matches .toggle-sections-btn border */
     border-radius: 4px; /* Matches .toggle-sections-btn border-radius */
